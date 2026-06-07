@@ -7,6 +7,7 @@ from email.message import EmailMessage
 import tempfile
 from email.mime.image import MIMEImage
 import matplotlib.pyplot as plt
+from calendar_content import add_calendar_content, get_calendar_html
 
 import requests
 from dotenv import load_dotenv
@@ -88,6 +89,8 @@ def list_content():
                 f"{index}. Weather: {item['location_name']} "
                 f"({item['latitude']}, {item['longitude']})"
             )
+        elif item["type"] == "calendar":
+            print(f"{index}. Calendar: {item['title']}")
         else:
             print(f"{index}. Unknown content type: {item}")
 
@@ -106,6 +109,8 @@ def delete_content(index):
 
     if removed["type"] == "weather":
         print(f"Deleted weather content for {removed['location_name']}")
+    elif removed["type"] == "calendar":
+        print(f"Deleted calendar content: {removed['title']}")
     else:
         print("Deleted content")
 
@@ -172,6 +177,8 @@ def build_email_html():
     for item in config.get("content", []):
         if item["type"] == "weather":
             sections.append(get_weather_html(item))
+        elif item["type"] == "calendar":
+            sections.append(get_calendar_html(item))
 
     content_html = "\n".join(sections)
 
@@ -283,6 +290,7 @@ def main():
 
     subparsers.add_parser("send")
     subparsers.add_parser("content")
+    subparsers.add_parser("add-calendar")
 
     delete_parser = subparsers.add_parser("delete-content")
     delete_parser.add_argument("index", type=int)
@@ -302,6 +310,11 @@ def main():
         delete_content(args.index)
     elif args.command == "add-weather":
         add_weather(args.lat, args.lon, args.name)
+    elif args.command == "add-calendar":
+        config = load_config()
+        message = add_calendar_content(config)
+        save_config(config)
+        print(message)
 
 
 if __name__ == "__main__":
