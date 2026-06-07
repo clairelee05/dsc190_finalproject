@@ -5,6 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "matplotlib>=3.10.9",
     "python-dotenv>=1.2.2",
     "requests>=2.34.2",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
 ]
