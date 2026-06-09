@@ -9,3 +9,9 @@ The tool can also generate an AI-powered overview that highlights key events, ta
 
 <Instructions for how to use the tool. Give example commands, and explain what
 they do.>
+
+TO-DO LIST LINK: https://app.notion.com/p/To-do-List-ex-e62f0bed024b836295c101c4532e1bc3 
+
+HOMEWORK TRACKER LINK: https://app.notion.com/p/378f0bed024b806cb0cdcea902abf825?v=ec9f0bed024b83db96fe88de353c39fd
+
+*You can create copies of these Notion pages and copy their database IDs as well as your Notion token.
