@@ -144,12 +144,6 @@ def get_todo_html(item):
                 <span style="color:#666;">{todo["notes"]}</span>
                 """
 
-            html += f"""
-                <br>
-                <span style="color:#666;">{todo["status"]}</span>
-            </li>
-            """
-
         html += "</ul>"
 
     html += "</div>"
