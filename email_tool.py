@@ -5,7 +5,6 @@ from email.message import EmailMessage
 import tempfile
 from email.mime.image import MIMEImage
 import matplotlib.pyplot as plt
-from calendar_content import add_calendar_content, get_calendar_html
 
 from dotenv import load_dotenv
 
@@ -14,9 +13,10 @@ from duedate_content import add_duedate_content, get_duedate_html
 from news_content import add_news_content, get_news_html
 from weather_content import add_weather, get_weather_html
 from todo_content import add_todo_content, get_todo_html
+from summary_content import add_summary_content, get_summary_html
+from calendar_content import add_calendar_content, get_calendar_html
 
 load_dotenv()
-
 
 def list_content():
     config = load_config()
@@ -38,22 +38,24 @@ def list_content():
             )
 
         elif content_type == "duedate":
-            print(
-                f"{index}. Due Date: {item.get('title', 'Assignments')}"
-            )
+            source = item.get("source", "Notion")
+            print(f"{index}. Due Date: {source}")
 
         elif content_type == "news":
-            print(
-                f"{index}. News: {item.get('title', 'News')} "
-                f"({item.get('category', 'general')})"
-            )
+            category = item.get("category", "general")
+            print(f"{index}. News: {category}")
 
         elif content_type == "calendar":
-            print(
-                f"{index}. Calendar: {item.get('title', 'Calendar')}"
-            )
+            source = item.get("source") or item.get("calendar_source") or "Google"
+            calendar_email = os.getenv("EMAIL_ADDRESS", "Unknown")
+            print(f"{index}. Calendar: {source} ({calendar_email})")
+
         elif content_type == "todo":
-            print(f"{index}. To Do: {item.get('title', 'To Do')}")
+            source = item.get("source", "Notion")
+            print(f"{index}. To Do: {source}")
+
+        elif content_type == "summary":
+            print(f"{index}. AI Summary: {item.get('title', 'Today at a Glance')}")
 
         else:
             print(f"{index}. Unknown content type: {item}")
@@ -81,19 +83,45 @@ def delete_content(index):
 
 def build_email_html():
     config = load_config()
-    sections = []
+
+    rendered_sections = []
+    summary_item = None
 
     for item in config.get("content", []):
-        if item["type"] == "weather":
-            sections.append(get_weather_html(item))
-        elif item["type"] == "calendar":
-            sections.append(get_calendar_html(item))
-        elif item["type"] == "duedate":
-            sections.append(get_duedate_html(item))
-        elif item["type"] == "news":
-            sections.append(get_news_html(item))
-        elif item["type"] == "todo":
-            sections.append(get_todo_html(item))
+        content_type = item.get("type")
+
+        if content_type == "summary":
+            summary_item = item
+            continue
+
+        section_html = ""
+
+        if content_type == "weather":
+            section_html = get_weather_html(item)
+        elif content_type == "calendar":
+            section_html = get_calendar_html(item)
+        elif content_type == "duedate":
+            section_html = get_duedate_html(item)
+        elif content_type == "news":
+            section_html = get_news_html(item)
+        elif content_type == "todo":
+            section_html = get_todo_html(item)
+
+        if section_html:
+            rendered_sections.append(
+                {
+                    "type": content_type,
+                    "title": item.get("title", content_type),
+                    "html": section_html,
+                }
+            )
+
+    sections = []
+
+    if summary_item:
+        sections.append(get_summary_html(summary_item, config, rendered_sections))
+
+    sections.extend(section["html"] for section in rendered_sections)
 
     content_html = "\n".join(sections)
 
@@ -153,6 +181,7 @@ def main():
     subparsers.add_parser("add-duedate")
     subparsers.add_parser("add-news")
     subparsers.add_parser("add-todo")
+    subparsers.add_parser("add-summary")
 
     delete_parser = subparsers.add_parser("delete-content")
     delete_parser.add_argument("index", type=int)
@@ -193,6 +222,11 @@ def main():
     elif args.command == "add-todo":
         config = load_config()
         message = add_todo_content(config)
+        save_config(config)
+        print(message)
+    elif args.command == "add-summary":
+        config = load_config()
+        message = add_summary_content(config)
         save_config(config)
         print(message)
 
