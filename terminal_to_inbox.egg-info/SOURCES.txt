@@ -1,0 +1,16 @@
+README.md
+calendar_content.py
+config.py
+duedate_content.py
+email_tool.py
+news_content.py
+pyproject.toml
+summary_content.py
+todo_content.py
+weather_content.py
+terminal_to_inbox.egg-info/PKG-INFO
+terminal_to_inbox.egg-info/SOURCES.txt
+terminal_to_inbox.egg-info/dependency_links.txt
+terminal_to_inbox.egg-info/entry_points.txt
+terminal_to_inbox.egg-info/requires.txt
+terminal_to_inbox.egg-info/top_level.txt

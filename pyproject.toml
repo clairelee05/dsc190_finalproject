@@ -1,5 +1,5 @@
 [project]
-name = "dsc190-finalproject"
+name = "terminal-to-inbox"
 version = "0.1.0"
 description = "Terminal to Inbox daily email digest tool"
 readme = "README.md"
@@ -8,13 +8,28 @@ dependencies = [
     "google-api-python-client>=2.197.0",
     "google-auth-httplib2>=0.4.0",
     "google-auth-oauthlib>=1.4.0",
-    "matplotlib>=3.10.9",
+    "matplotlib>=3.8",
     "python-dotenv>=1.2.2",
     "requests>=2.34.2",
 ]
 
 [project.scripts]
 terminal-to-inbox = "email_tool:main"
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+py-modules = [
+    "email_tool",
+    "calendar_content",
+    "config",
+    "duedate_content",
+    "news_content",
+    "summary_content",
+    "todo_content",
+    "weather_content",
+]
 
 [dependency-groups]
 dev = [
