@@ -129,7 +129,7 @@ def build_email_html():
     <html>
         <body style="font-family:Arial, sans-serif; padding:20px; color:#222;">
             <h1 style="font-size:22px; margin-bottom:20px;">
-                Your Email Tool Update
+                Terminal to Inbox
             </h1>
             {content_html}
         </body>
@@ -154,7 +154,7 @@ def send_email():
     html_body = build_email_html()
 
     msg = EmailMessage()
-    msg["Subject"] = "Your Email Tool Update"
+    msg["Subject"] = "Terminal to Inbox"
     msg["From"] = sender
     msg["To"] = recipient
 
